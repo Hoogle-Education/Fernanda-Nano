@@ -1,0 +1,2 @@
+Clothing,Women's Running Shoes,39.99,Nike,1,3
+CleaningSupplies,Window Cleaner,2.99,Do not mix up,6,3
