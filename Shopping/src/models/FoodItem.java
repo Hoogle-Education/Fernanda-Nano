@@ -66,7 +66,7 @@ public class FoodItem extends Item {
     @Override
     public String toCsv() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
-        return "Food," + super.toCsv()
+        return  super.toCsv()
                 + "," + formatter.format(producedIn)
                 + "," + formatter.format(expiresIn);
     }

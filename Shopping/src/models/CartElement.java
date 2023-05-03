@@ -78,9 +78,15 @@ public class CartElement implements Comparable<CartElement> {
     }
 
     public String toCsv() {
-        return item.toCsv() +
-                "," + quantity +
-                "," + priority;
+        String aux = "";
+
+        switch (item.getCategory()){
+            case FOOD -> aux = "Food," + quantity + "," + item.toCsv() + "," + priority;
+            case CLOTHING -> aux = "Clothing," + quantity + "," + item.toCsv() + "," + priority;
+            case CLEANING_SUPPLIES -> aux = "CleaningSupplies," + quantity + "," + item.toCsv() + "," + priority;
+        }
+
+        return aux;
     }
 
     @Override

@@ -29,6 +29,7 @@ public class Menu {
     }
 
     public static void showItemCategorySelection() {
+        System.out.println("------------------------");
         System.out.println("Witch one is the type of your item?");
         System.out.println("1 - Food");
         System.out.println("2 - Cleaning Supplies");

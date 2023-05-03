@@ -34,6 +34,7 @@ public class EcommerceManagingApplication {
                     case 1 -> AdminService.showStoreItems();
                     case 2 -> AdminService.addNewItemToStore();
                     case 3 -> AdminService.incrementExistingItemQuantity();
+                    case 4 -> AdminService.deleteItemFromStore();
                 }
 
             } while (option != 0 && option != 9);

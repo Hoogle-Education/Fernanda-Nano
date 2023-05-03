@@ -47,7 +47,7 @@ public class CleaningSuppliesItem extends Item {
 
     @Override
     public String toCsv() {
-        return "CleaningSupplies," + super.toCsv()
+        return super.toCsv()
                 + "," + warning;
     }
 }

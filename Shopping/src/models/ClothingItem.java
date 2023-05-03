@@ -47,7 +47,7 @@ public class ClothingItem extends Item {
 
     @Override
     public String toCsv() {
-        return "Clothing," + super.toCsv()
+        return  super.toCsv()
                 + "," + brand;
     }
 }

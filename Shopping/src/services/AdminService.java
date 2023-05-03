@@ -35,11 +35,11 @@ public class AdminService {
         System.out.print("Name: ");
         String name = input.nextLine();
 
-        System.out.println("Price: ");
+        System.out.print("Price: ");
         double price = input.nextDouble();
         input.nextLine();
 
-        System.out.println("Quantity: ");
+        System.out.print("Quantity: ");
         int quantity = input.nextInt();
         input.nextLine();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
@@ -71,12 +71,9 @@ public class AdminService {
     }
 
     public static void incrementExistingItemQuantity() {
-
         List<StoreElement> storeElements = Store.getItems();
 
         try {
-
-
             System.out.print("Item id: ");
             int itemId = input.nextInt();
 
@@ -97,6 +94,44 @@ public class AdminService {
         } catch (NegativeOrZeroException | InvalidItemIndexException exception) {
             System.err.println(exception.getMessage());
         }
+    }
+
+    public static void deleteItemFromStore() {
+        List<StoreElement> storeElements = Store.getItems();
+
+        try {
+            System.out.print("Item id: ");
+            int itemId = input.nextInt();
+
+            if (itemId < 0)
+                throw new NegativeOrZeroException("The value must be greater than zero!");
+
+            if (itemId >= storeElements.size())
+                throw new InvalidItemIndexException("Unexpected value: " + itemId);
+
+            var itemToDelete = storeElements.get(itemId).getItem();
+            System.out.println("Item to be deleted: " +  itemToDelete);
+            System.out.print("Do you confirm delete? (y/n): ");
+            String accept = input.next();
+
+            if(accept.equalsIgnoreCase("y")){
+                var removedItem = storeElements.remove(itemId);
+
+                if(removedItem == null)
+                    throw new InvalidItemIndexException("This index is invalid to delete.");
+
+                System.out.println("Item deleted.");
+            } else {
+                System.out.println("Deletion aborted.");
+            }
+
+            updateStoreInFile(storeElements);
+        } catch (InvalidItemIndexException invalidItem) {
+            System.err.println(invalidItem.getMessage());
+        } catch (NegativeOrZeroException negativeOrZero) {
+            System.err.println(negativeOrZero.getMessage());
+        }
+
     }
 
     private static void updateStoreInFile(List<StoreElement> storeElements) {

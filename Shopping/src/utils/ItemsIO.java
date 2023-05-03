@@ -15,11 +15,7 @@ import java.util.List;
 public class ItemsIO { // input and output
 
     public static List<StoreElement> read(String filename) {
-        File file = new File("");
-
-        // caminho absoluto na máquina que está executando
-        String basePath = file.getAbsolutePath();
-        String filePath = basePath + "\\" + filename + ".txt";
+        String filePath = getPath(filename);
 
         // ajuda a converter datas para textos e vice versa
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
@@ -69,9 +65,7 @@ public class ItemsIO { // input and output
         var csvLines = items.stream().map(i -> i.toCsv()).toList();
         var csv = csvLines.stream().reduce("", (acc, line) -> acc + line + "\n");
 
-        File file = new File("");
-        String basePath = file.getAbsolutePath();
-        String filePath = basePath + "\\" + filename + ".txt";
+        String filePath = getPath(filename);
 
         try {
             Files.writeString(Path.of(filePath), csv);
@@ -84,15 +78,19 @@ public class ItemsIO { // input and output
         var csvLines = storeElements.stream().map(e -> e.toCsv()).toList();
         var csv = csvLines.stream().reduce("", (acc, line) -> acc + line + "\n");
 
-        File file = new File("");
-        String basePath = file.getAbsolutePath();
-        String filePath = basePath + "\\" + filename + ".txt";
+        String filePath = getPath(filename);
 
         try {
             Files.writeString(Path.of(filePath), csv);
         } catch (IOException iox) {
             System.err.println("There was and error to writeCartElements in file: " + filename);
         }
+    }
+
+    private static String getPath(String filename) {
+        File file = new File("");
+        String basePath = file.getAbsolutePath();
+        return  basePath + File.separator + filename + ".txt";
     }
 
 }
