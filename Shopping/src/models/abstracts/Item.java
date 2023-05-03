@@ -1,4 +1,6 @@
-package models;
+package models.abstracts;
+
+import models.enums.ItemCategory;
 
 import java.util.Objects;
 
@@ -7,6 +9,8 @@ public abstract class Item {
     // atributos - tem, caracteristicas
     protected String name;
     protected double price;
+
+    protected ItemCategory category;
 
     // construtor
     // O constructor possui o mesmo nome da classe
@@ -35,6 +39,10 @@ public abstract class Item {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public ItemCategory getCategory() {
+        return category;
     }
 
     @Override

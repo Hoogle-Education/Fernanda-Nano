@@ -1,11 +1,5 @@
 package models;
 
-import exceptions.BuyingEmptyCartException;
-import exceptions.InvalidItemIndexException;
-import exceptions.NegativeOrZeroException;
-import exceptions.OutOfStockException;
-import utils.BubbleSort;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,54 +57,8 @@ public class User {
     public List<CartElement> getRemainingItems() {
         return remainingItems;
     }
-    public void addItemToCart(int itemId, int priority, int quantity)
-            throws InvalidItemIndexException, NegativeOrZeroException, OutOfStockException {
-
-        if (itemId > Store.getItems().size())
-            throw new InvalidItemIndexException("The index must be in the items available items");
-
-        if (itemId < 0)
-            throw new NegativeOrZeroException("The value must be greater or equal than zero!");
-
-        if (priority <= 0 || quantity <= 0)
-            throw new NegativeOrZeroException("The value must be greater than zero!");
-
-        Item itemFromStore = Store.getItemByQuantity(itemId, quantity);
-        cartItems.add(new CartElement(itemFromStore, priority, quantity));
-        BubbleSort.sort(cartItems);
-    }
-    public void finishAndBuyCart() throws BuyingEmptyCartException {
-        if (cartItems.size() == 0)
-            throw new BuyingEmptyCartException("You have to add items before finish.");
-
-        for (var cartItem : cartItems) {
-            Item item = cartItem.getItem();
-
-            while (bankAccount >= cartItem.getItem().getPrice() && cartItem.getQuantity() > 0) {
-                Item acquiredItem = null;
-
-                var optionalCartElement = acquiredItems
-                        .stream()
-                        .filter(cartElement -> cartElement.getItem().equals(item))
-                        .findFirst();
-
-                if (optionalCartElement.isPresent()) {
-                    var element = optionalCartElement.get();
-                    element.incrementQuantity();
-                    var index = acquiredItems.indexOf(element);
-                    acquiredItems.set(index, element);
-                } else {
-                    acquiredItems.add(new CartElement(item, cartItem.getPriority(), 1));
-                }
-
-                bankAccount -= item.getPrice();
-                cartItem.decrementQuantity();
-            }
-
-            if(cartItem.getQuantity() > 0) {
-                remainingItems.add(new CartElement(item, cartItem.getPriority(), cartItem.getQuantity()));
-            }
-        }
+    public void payWithBankAccount(double amount) {
+        this.bankAccount -= amount;
     }
 
 }

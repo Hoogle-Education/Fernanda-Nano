@@ -2,10 +2,9 @@ package models;
 
 import exceptions.InvalidItemIndexException;
 import exceptions.OutOfStockException;
+import models.abstracts.Item;
 import utils.ItemsIO;
 
-import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 public class Store {

@@ -1,5 +1,8 @@
 package models;
 
+import models.abstracts.Item;
+import models.enums.ItemCategory;
+
 import java.util.Objects;
 
 public class CleaningSuppliesItem extends Item {
@@ -7,6 +10,7 @@ public class CleaningSuppliesItem extends Item {
 
     public CleaningSuppliesItem(String name, double price, String warning) {
         super(name, price);
+        this.category = ItemCategory.CLEANING_SUPPLIES;
         this.warning = warning;
     }
 

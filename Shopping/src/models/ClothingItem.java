@@ -1,6 +1,8 @@
 package models;
 
-import java.time.format.DateTimeFormatter;
+import models.abstracts.Item;
+import models.enums.ItemCategory;
+
 import java.util.Objects;
 
 public class ClothingItem extends Item {
@@ -8,6 +10,7 @@ public class ClothingItem extends Item {
 
     public ClothingItem(String name, double price, String brand) {
         super(name, price);
+        this.category = ItemCategory.CLOTHING;
         this.brand = brand;
     }
 

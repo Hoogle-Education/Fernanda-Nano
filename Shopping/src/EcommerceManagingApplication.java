@@ -1,15 +1,12 @@
 import exceptions.*;
 import models.*;
-import services.AdminOptions;
-import services.UserOptions;
-import utils.ItemsIO;
-import services.Menu;
+import services.AdminService;
+import services.UserService;
+import utils.Menu;
 
-import java.util.List;
 import java.util.Scanner;
 
-public class Application {
-
+public class EcommerceManagingApplication {
     private static Scanner input;
 
     public static int adminInteractionLoop() {
@@ -19,32 +16,35 @@ public class Application {
         System.out.print("Admin password: ");
         String password = input.nextLine();
 
+        int option;
+
         try {
             boolean isInvalidUsername = !username.equals("admin");
             boolean isInvalidPassword = !username.equals("admin123");
 
             if (isInvalidUsername && isInvalidPassword) {
-                throw new InvalidAdminCredentialsException("Invalid credentials.")
+                throw new InvalidAdminCredentialsException("Invalid credentials.");
             }
+
+            do {
+                Menu.showToAdmin();
+                option = input.nextInt();
+
+                switch (option) {
+                    case 1 -> AdminService.showStoreItems();
+                    case 2 -> AdminService.addNewItemToStore();
+                    case 3 -> AdminService.incrementExistingItemQuantity();
+                }
+
+            } while (option != 0 && option != 9);
+
         } catch (InvalidAdminCredentialsException invalidCredentials) {
             System.err.println(invalidCredentials.getMessage());
             return 9; // go back user/admin menu
+        } catch (InvalidItemIndexException invalidItem) {
+            System.err.println(invalidItem.getMessage());
+            return 9;
         }
-
-        int option;
-
-        do {
-            Menu.showToUser();
-            option = input.nextInt();
-
-            switch (option) {
-                case 1 -> AdminOptions.showStoreItems();
-                case 2 -> UserOptions.addItemToCart(user);
-                case 3 -> UserOptions.checkItemsInCart(user);
-                case 4 -> UserOptions.finishAndBuyCart(user);
-            }
-
-        } while (option != 0 && option != 9);
 
         return option;
     }
@@ -64,10 +64,10 @@ public class Application {
             option = input.nextInt();
 
             switch (option) {
-                case 1 -> UserOptions.showStoreAvailableItems(user);
-                case 2 -> UserOptions.addItemToCart(user);
-                case 3 -> UserOptions.checkItemsInCart(user);
-                case 4 -> UserOptions.finishAndBuyCart(user);
+                case 1 -> UserService.showStoreAvailableItems(user);
+                case 2 -> UserService.addItemToCart(user);
+                case 3 -> UserService.checkItemsInCart(user);
+                case 4 -> UserService.finishAndBuyCart(user);
             }
 
         } while (option != 0 && option != 9);
@@ -90,11 +90,11 @@ public class Application {
             Menu.showEntryMenu();
             option = input.nextInt();
 
-            if(option == 1) {
-                System.out.println("admin :)");
-            } else if (option == 2) {
-                option = userInteractionLoop();
-            }
+            option = switch (option) {
+                case 1 -> adminInteractionLoop();
+                case 2 -> userInteractionLoop();
+                default -> 9;
+            };
 
         } while (option != 0);
 

@@ -1,5 +1,7 @@
 package models;
 
+import models.abstracts.Item;
+
 import java.util.Objects;
 
 public class CartElement implements Comparable<CartElement> {

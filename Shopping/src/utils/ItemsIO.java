@@ -1,6 +1,7 @@
 package utils;
 
 import models.*;
+import models.abstracts.Item;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,8 +65,7 @@ public class ItemsIO { // input and output
         }
     }
 
-    public static void write(List<CartElement> items, String filename) {
-
+    public static void writeCartElements(List<CartElement> items, String filename) {
         var csvLines = items.stream().map(i -> i.toCsv()).toList();
         var csv = csvLines.stream().reduce("", (acc, line) -> acc + line + "\n");
 
@@ -76,15 +76,23 @@ public class ItemsIO { // input and output
         try {
             Files.writeString(Path.of(filePath), csv);
         } catch (IOException iox) {
-            System.err.println("There was and error to write in file: " + filename);
+            System.err.println("There was and error to writeCartElements in file: " + filename);
+        }
+    }
+
+    public static void writeStoreElements(List<StoreElement> storeElements, String filename) {
+        var csvLines = storeElements.stream().map(e -> e.toCsv()).toList();
+        var csv = csvLines.stream().reduce("", (acc, line) -> acc + line + "\n");
+
+        File file = new File("");
+        String basePath = file.getAbsolutePath();
+        String filePath = basePath + "\\" + filename + ".txt";
+
+        try {
+            Files.writeString(Path.of(filePath), csv);
+        } catch (IOException iox) {
+            System.err.println("There was and error to writeCartElements in file: " + filename);
         }
     }
 
 }
-
-// "linha1", "linha2", "linha3"
-
-// acc = ""
-// acc = acc + "linha1" + "\n" = "linha1\n"
-// acc = acc + "linha2" + "\n" = "linha1\nlinha2\n"
-// acc = acc + "linha3" + "\n" = "linha1\nlinha2\nlinha3\n"

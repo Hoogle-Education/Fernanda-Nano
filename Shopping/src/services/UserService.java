@@ -8,12 +8,14 @@ import models.CartElement;
 import models.Store;
 import models.StoreElement;
 import models.User;
+import models.abstracts.Item;
+import utils.BubbleSort;
 import utils.ItemsIO;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class UserOptions {
+public class UserService {
 
     private static Scanner input = new Scanner(System.in);
 
@@ -39,7 +41,7 @@ public class UserOptions {
             System.out.print("Type the quantity of this item > ");
             int quantity = input.nextInt();
 
-            user.addItemToCart(itemId, priority, quantity);
+            addItemToUserCart(user, itemId, priority, quantity);
         } catch (InvalidItemIndexException invalidIndex) {
             System.err.println(invalidIndex.getMessage());
         } catch (NegativeOrZeroException negativeOrZero) {
@@ -69,7 +71,7 @@ public class UserOptions {
 
     public static void finishAndBuyCart(User user) {
         try {
-            user.finishAndBuyCart();
+            finishAndBuyUserCart(user);
             List<CartElement> acquiredItems = user.getAcquiredItems();
             List<CartElement> remainingItems = user.getRemainingItems();
 
@@ -104,7 +106,64 @@ public class UserOptions {
             System.out.println("------------------------------");
         }
 
-        ItemsIO.write(user.getAcquiredItems(), "acquired_items");
-        ItemsIO.write(user.getRemainingItems(), "items_remaining");
+        ItemsIO.writeCartElements(user.getAcquiredItems(), "acquired_items");
+        ItemsIO.writeCartElements(user.getRemainingItems(), "items_remaining");
+    }
+
+    private static void addItemToUserCart(User user, int itemId, int priority, int quantity)
+            throws InvalidItemIndexException, NegativeOrZeroException, OutOfStockException {
+
+        if (itemId > Store.getItems().size())
+            throw new InvalidItemIndexException("The index must be in the items available items");
+
+        if (itemId < 0)
+            throw new NegativeOrZeroException("The value must be greater or equal than zero!");
+
+        if (priority <= 0 || quantity <= 0)
+            throw new NegativeOrZeroException("The value must be greater than zero!");
+
+        Item itemFromStore = Store.getItemByQuantity(itemId, quantity);
+        user.getCartItems().add(new CartElement(itemFromStore, priority, quantity));
+        BubbleSort.sort(user.getCartItems());
+    }
+
+    private static void finishAndBuyUserCart(User user)
+            throws BuyingEmptyCartException {
+
+        var cartItems = user.getCartItems();
+        var acquiredItems = user.getAcquiredItems();
+        var remainingItems = user.getRemainingItems();
+
+        if (cartItems.size() == 0)
+            throw new BuyingEmptyCartException("You have to add items before finish.");
+
+        for (var cartItem : cartItems) {
+            Item item = cartItem.getItem();
+
+            while (user.getBankAccount() >= cartItem.getItem().getPrice() && cartItem.getQuantity() > 0) {
+                Item acquiredItem = null;
+
+                var optionalCartElement = acquiredItems
+                        .stream()
+                        .filter(cartElement -> cartElement.getItem().equals(item))
+                        .findFirst();
+
+                if (optionalCartElement.isPresent()) {
+                    var element = optionalCartElement.get();
+                    element.incrementQuantity();
+                    var index = acquiredItems.indexOf(element);
+                    acquiredItems.set(index, element);
+                } else {
+                    acquiredItems.add(new CartElement(item, cartItem.getPriority(), 1));
+                }
+
+                user.payWithBankAccount(item.getPrice());
+                cartItem.decrementQuantity();
+            }
+
+            if(cartItem.getQuantity() > 0) {
+                remainingItems.add(new CartElement(item, cartItem.getPriority(), cartItem.getQuantity()));
+            }
+        }
     }
 }

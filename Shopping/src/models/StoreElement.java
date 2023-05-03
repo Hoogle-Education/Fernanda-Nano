@@ -1,7 +1,8 @@
 package models;
 
-public class StoreElement {
+import models.abstracts.Item;
 
+public class StoreElement {
     private Item item;
     private int quantity;
 
@@ -28,6 +29,18 @@ public class StoreElement {
 
     public void decrementQuantity(int quantity) {
         this.quantity -= quantity;
+    }
+
+    public String toCsv() {
+        String aux = "";
+
+        switch (item.getCategory()){
+            case FOOD -> aux = "Food," + quantity + "," + item.toCsv();
+            case CLOTHING -> aux = "Clothing," + quantity + "," + item.toCsv();
+            case CLEANING_SUPPLIES -> aux = "CleaningSupplies," + quantity + "," + item.toCsv();
+        }
+
+        return aux;
     }
 
     @Override

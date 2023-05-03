@@ -1,5 +1,8 @@
 package models;
 
+import models.abstracts.Item;
+import models.enums.ItemCategory;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -13,6 +16,7 @@ public class FoodItem extends Item {
     // constructor
     public FoodItem(String name, double price, LocalDate producedIn, LocalDate expiresIn) {
         super(name, price);
+        this.category = ItemCategory.FOOD;
         this.producedIn = producedIn;
         this.expiresIn = expiresIn;
     }

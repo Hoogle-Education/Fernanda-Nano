@@ -1,4 +1,4 @@
-package services;
+package utils;
 
 public class Menu {
     public static void showEntryMenu() {
