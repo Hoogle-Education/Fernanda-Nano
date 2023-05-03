@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ItemsIO { // input and output
 
-    public static List<Item> read(String filename) throws IOException {
+    public static List<StoreElement> read(String filename) {
         File file = new File("");
 
         // caminho absoluto na máquina que está executando
@@ -23,43 +23,48 @@ public class ItemsIO { // input and output
         // ajuda a converter datas para textos e vice versa
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yy");
 
-        var lines = Files.readAllLines(Path.of(filePath));
-        List<Item> itemsRead = new ArrayList<>();
+        try {
+            var lines = Files.readAllLines(Path.of(filePath));
+            List<StoreElement> inStoreItems = new ArrayList<>();
 
-        for (var line : lines) { // for each line in lines
-            // separa basedo numa regra
-            var values = line.split(",");
+            for (var line : lines) { // for each line in lines
+                // separa basedo numa regra
+                var values = line.split(",");
 
-            Item itemRead = null;
+                Item itemRead = null;
 
-            // convertendo valores do CSV
-            // todos os valores do csv vem em formato String
-            // no meu programo utilizo variables tipadas
-            if (values[0].equals("Food")) {
-                itemRead = new FoodItem(
-                        values[1],
-                        Double.parseDouble(values[2]),
-                        LocalDate.parse(values[3], formatter),
-                        LocalDate.parse(values[4], formatter));
-            } else if (values[0].equals("Clothing")) {
-                itemRead = new ClothingItem(
-                        values[1],
-                        Double.parseDouble(values[2]),
-                        values[3]);
-            } else {
-                itemRead = new CleaningSuppliesItem(
-                        values[1],
-                        Double.parseDouble(values[2]),
-                        values[3]);
+                // convertendo valores do CSV
+                // todos os valores do csv vem em formato String
+                // no meu programo utilizo variables tipadas
+                if (values[0].equals("Food")) {
+                    itemRead = new FoodItem(
+                            values[2],
+                            Double.parseDouble(values[3]),
+                            LocalDate.parse(values[4], formatter),
+                            LocalDate.parse(values[5], formatter));
+                } else if (values[0].equals("Clothing")) {
+                    itemRead = new ClothingItem(
+                            values[2],
+                            Double.parseDouble(values[3]),
+                            values[4]);
+                } else {
+                    itemRead = new CleaningSuppliesItem(
+                            values[2],
+                            Double.parseDouble(values[3]),
+                            values[4]);
+                }
+
+                inStoreItems.add(new StoreElement(itemRead, Integer.parseInt(values[1])));
             }
 
-            itemsRead.add(itemRead);
+            return inStoreItems;
+        } catch (IOException iox) {
+            System.err.println("Cannot read this file.");
+            return null;
         }
-
-        return itemsRead;
     }
 
-    public static void write(List<CartElement> items, String filename) throws IOException {
+    public static void write(List<CartElement> items, String filename) {
 
         var csvLines = items.stream().map(i -> i.toCsv()).toList();
         var csv = csvLines.stream().reduce("", (acc, line) -> acc + line + "\n");
@@ -68,7 +73,11 @@ public class ItemsIO { // input and output
         String basePath = file.getAbsolutePath();
         String filePath = basePath + "\\" + filename + ".txt";
 
-        Files.writeString(Path.of(filePath), csv);
+        try {
+            Files.writeString(Path.of(filePath), csv);
+        } catch (IOException iox) {
+            System.err.println("There was and error to write in file: " + filename);
+        }
     }
 
 }

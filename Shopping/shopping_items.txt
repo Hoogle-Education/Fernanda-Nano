@@ -1,7 +1,0 @@
-Food,Organic Apples,5.99,04/25/22,04/28/22
-Clothing,Women's Running Shoes,39.99,Nike
-CleaningSupplies,All-Purpose Cleaner,4.99,Keep away from kids
-Clothing,Men's T-Shirt,14.99,Adidas
-Food,Whole Grain Bread,3.49,04/10/22,04/28/22
-CleaningSupplies,Window Cleaner,2.99,Do not mix up
-Clothing,Kids' Jeans,19.99,Gucci
